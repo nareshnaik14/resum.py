@@ -627,3 +627,50 @@ if analyze:
         )
 
         st.session_state["candidate_scores"] = candidate_scores
+
+
+
+###
+
+##
+st.header("📋 Candidate Details")
+
+if "candidate_scores" in st.session_state:
+
+    candidates = st.session_state["candidate_scores"]
+
+    for candidate in candidates:
+
+        with st.expander(f"📄 {candidate['filename']}"):
+
+            st.write("### Similarity Score")
+            st.progress(candidate["score"] / 100)
+            st.write(f"{candidate['score']} %")
+
+            st.write("### Matched Skills")
+            if candidate["matched_words"]:
+                st.success(", ".join(candidate["matched_words"]))
+            else:
+                st.warning("No matched skills")
+
+            st.write("### Missing Skills")
+            if candidate["missing_words"]:
+                st.error(", ".join(candidate["missing_words"]))
+            else:
+                st.success("No missing skills")
+
+            st.write("### Resume Preview")
+            st.text_area(
+                "",
+                candidate["resume_text"][:2500],
+                height=250,
+                disabled=True,
+                key=candidate["filename"]
+
+
+            )
+
+
+
+
+
