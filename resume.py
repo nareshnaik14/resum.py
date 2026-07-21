@@ -431,3 +431,599 @@ if analyze:
     else:
 
         st.success("✅ Ready for Resume Parsing...")
+
+
+
+
+# ==========================================================
+# Resume Text Extraction Functions
+# ==========================================================
+
+def extract_pdf(file):
+    text = ""
+    try:
+        with pdfplumber.open(file) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+    except Exception as e:
+        st.error(f"PDF Error: {e}")
+    return text
+
+
+def extract_docx(file):
+    text = ""
+    try:
+        document = docx.Document(file)
+        for para in document.paragraphs:
+            text += para.text + "\n"
+    except Exception as e:
+        st.error(f"DOCX Error: {e}")
+    return text
+
+
+def extract_doc(file):
+    text = ""
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".doc") as tmp:
+            tmp.write(file.read())
+            tmp_path = tmp.name
+
+        text = textract.process(tmp_path).decode("utf-8")
+
+        os.remove(tmp_path)
+
+    except Exception as e:
+        st.error(f"DOC Error: {e}")
+
+    return text
+
+
+def extract_txt(file):
+    try:
+        return file.read().decode("utf-8")
+    except:
+        return ""
+
+
+def extract_rtf(file):
+    try:
+        raw = file.read().decode("utf-8")
+        return rtf_to_text(raw)
+    except:
+        return ""
+
+
+def extract_resume(file):
+
+    extension = file.name.split(".")[-1].lower()
+
+    if extension == "pdf":
+        return extract_pdf(file)
+
+    elif extension == "docx":
+        return extract_docx(file)
+
+    elif extension == "doc":
+        return extract_doc(file)
+
+    elif extension == "txt":
+        return extract_txt(file)
+
+    elif extension == "rtf":
+        return extract_rtf(file)
+
+    return ""
+
+
+# ==========================================================
+# Parse Uploaded Resumes
+# ==========================================================
+
+parsed_resumes = []
+
+if resumes:
+
+    st.markdown("---")
+    st.subheader("📑 Resume Preview")
+
+    for file in resumes:
+
+        with st.spinner(f"Reading {file.name}..."):
+
+            resume_text = extract_resume(file)
+
+            resume_data = {
+                "filename": file.name,
+                "text": resume_text,
+                "characters": len(resume_text),
+                "words": len(resume_text.split())
+            }
+
+            parsed_resumes.append(resume_data)
+
+            with st.container():
+
+                st.markdown(
+                    f"""
+                    <div class="card">
+                    <h4>📄 {file.name}</h4>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.metric("Characters", len(resume_text))
+
+                with col2:
+                    st.metric("Words", len(resume_text.split()))
+
+                with st.expander("Preview Resume Text"):
+
+                    if resume_text.strip():
+
+                        st.text_area(
+                            "",
+                            value=resume_text[:3000],
+                            height=250,
+                            disabled=True,
+                            key=file.name
+                        )
+
+                    else:
+
+                        st.warning("No readable text found.")
+
+st.session_state["parsed_resumes"] = parsed_resumes
+
+
+
+
+
+# ==========================================================
+# Simple Resume Ranking
+# ==========================================================
+
+if analyze:
+
+    parsed_resumes = st.session_state.get("parsed_resumes", [])
+
+    if len(parsed_resumes) == 0:
+
+        st.error("No resumes available.")
+
+    else:
+
+        # Read Job Description
+
+        if job_description.strip():
+
+            jd_text = job_description.lower()
+
+        else:
+
+            jd_text = ""
+
+        candidate_scores = []
+
+        # ------------------------------------------
+        # Calculate Similarity Score
+        # ------------------------------------------
+
+        for resume in parsed_resumes:
+
+            resume_text = resume["text"].lower()
+
+            jd_words = set(jd_text.split())
+
+            resume_words = set(resume_text.split())
+
+            matched_words = jd_words.intersection(resume_words)
+
+            if len(jd_words) == 0:
+                score = 0
+            else:
+                score = round(
+                    (len(matched_words) / len(jd_words)) * 100,
+                    2
+                )
+
+            candidate_scores.append({
+
+                "filename": resume["filename"],
+
+                "score": score,
+
+                "matched_words": sorted(list(matched_words)),
+
+                "missing_words": sorted(list(jd_words - resume_words)),
+
+                "resume_text": resume["text"]
+
+            })
+
+        # ------------------------------------------
+        # Sort Highest Score First
+        # ------------------------------------------
+
+        candidate_scores = sorted(
+
+            candidate_scores,
+
+            key=lambda x: x["score"],
+
+            reverse=True
+
+        )
+
+        st.session_state["candidate_scores"] = candidate_scores
+
+
+
+# ==========================================================
+# Best Candidate
+# ==========================================================
+
+if "candidate_scores" in st.session_state:
+
+    candidates = st.session_state["candidate_scores"]
+
+    if len(candidates):
+
+        best = candidates[0]
+
+        st.markdown("---")
+
+        st.markdown(
+        f"""
+        <div style="background:#dcfce7;
+                    padding:25px;
+                    border-radius:15px;
+                    border-left:8px solid green;">
+
+        <h2>🏆 Best Candidate</h2>
+
+        <h3>{best['filename']}</h3>
+
+        <h1 style="color:green;">
+        {best['score']}%
+        </h1>
+
+        </div>
+        """,
+        unsafe_allow_html=True
+        )
+
+
+###
+
+##
+st.header("📋 Candidate Details")
+
+if "candidate_scores" in st.session_state:
+
+    candidates = st.session_state["candidate_scores"]
+
+    for candidate in candidates:
+
+        with st.expander(f"📄 {candidate['filename']}"):
+
+            st.write("### Similarity Score")
+            st.progress(candidate["score"] / 100)
+            st.write(f"{candidate['score']} %")
+
+            st.write("### Matched Skills")
+            if candidate["matched_words"]:
+                st.success(", ".join(candidate["matched_words"]))
+            else:
+                st.warning("No matched skills")
+
+            st.write("### Missing Skills")
+            if candidate["missing_words"]:
+                st.error(", ".join(candidate["missing_words"]))
+            else:
+                st.success("No missing skills")
+
+            st.write("### Resume Preview")
+            st.text_area(
+                "",
+                candidate["resume_text"][:2500],
+                height=250,
+                disabled=True,
+                key=candidate["filename"]
+
+
+            )
+
+st.markdown("## 📊 Candidate Ranking")
+rank = 1
+   for candidate in candidates:                                 #for candidate in candidates:
+
+  st.markdown(
+         f"""
+          <div style="background:white;
+                padding:15px;
+                margin-bottom:10px;
+                border-radius:12px;">
+
+    <h4>{rank}. {candidates['filename']}</h4>
+
+    <b>Similarity Score :</b>
+
+    {candidates['score']}%
+
+    </div>
+    """,
+    unsafe_allow_html=True
+    )
+
+rank += 1
+
+
+st.markdown("## 👤 Candidate Details")
+
+    for candidate in candidates:
+
+       with st.expander(candidate["filename"]):
+
+        st.write("### Similarity Score")
+
+        st.progress(candidate["score"]/100)
+
+        st.write(candidate["score"],"%")
+
+        st.write("### ✅ Matched Keywords")
+
+        if candidate["matched_words"]:
+
+            st.success(", ".join(candidate["matched_words"]))
+
+        else:
+
+            st.warning("No matched keywords")
+
+        st.write("### ❌ Missing Keywords")
+
+        if candidate["missing_words"]:
+
+            st.error(", ".join(candidate["missing_words"]))
+
+        else:
+
+            st.success("No missing keywords")
+
+        st.write("### Resume Preview")
+
+        st.text_area(
+
+            "",
+
+            candidate["resume_text"][:3000],
+
+            height=250,
+
+            disabled=True,
+
+            key=candidate["filename"]+"_preview"
+
+        )
+
+###
+
+##
+st.header("📋 Candidate Details")
+
+if "candidate_scores" in st.session_state:
+
+    candidates = st.session_state["candidate_scores"]
+
+    for candidate in candidates:
+
+        with st.expander(f"📄 {candidate['filename']}"):
+
+            st.write("### Similarity Score")
+            st.progress(candidate["score"] / 100)
+            st.write(f"{candidate['score']} %")
+
+            st.write("### Matched Skills")
+            if candidate["matched_words"]:
+                st.success(", ".join(candidate["matched_words"]))
+            else:
+                st.warning("No matched skills")
+
+            st.write("### Missing Skills")
+            if candidate["missing_words"]:
+                st.error(", ".join(candidate["missing_words"]))
+            else:
+                st.success("No missing skills")
+
+            st.write("### Resume Preview")
+            st.text_area(
+                "",
+                candidate["resume_text"][:2500],
+                height=250,
+                disabled=True,
+                key=candidate["filename"]
+
+
+            )
+
+st.markdown("## 📊 Candidate Ranking")
+rank = 1
+   for candidate in candidates:                                 #for candidate in candidates:
+
+  st.markdown(
+         f"""
+          <div style="background:white;
+                padding:15px;
+                margin-bottom:10px;
+                border-radius:12px;">
+
+    <h4>{rank}. {candidates['filename']}</h4>
+
+    <b>Similarity Score :</b>
+
+    {candidates['score']}%
+
+    </div>
+    """,
+    unsafe_allow_html=True
+    )
+
+rank += 1
+
+
+st.markdown("## 👤 Candidate Details")
+
+    for candidate in candidates:
+
+       with st.expander(candidate["filename"]):
+
+        st.write("### Similarity Score")
+
+        st.progress(candidate["score"]/100)
+
+        st.write(candidate["score"],"%")
+
+        st.write("### ✅ Matched Keywords")
+
+        if candidate["matched_words"]:
+
+            st.success(", ".join(candidate["matched_words"]))
+
+        else:
+
+            st.warning("No matched keywords")
+
+        st.write("### ❌ Missing Keywords")
+
+        if candidate["missing_words"]:
+
+            st.error(", ".join(candidate["missing_words"]))
+
+        else:
+
+            st.success("No missing keywords")
+
+        st.write("### Resume Preview")
+
+        st.text_area(
+
+            "",
+
+            candidate["resume_text"][:3000],
+
+            height=250,
+
+            disabled=True,
+
+            key=candidate["filename"]+"_preview"
+
+        )
+
+
+
+st.markdown("## 📋 Recruiter Summary")
+
+for candidate in candidates:
+
+    score = candidate["score"]
+
+    matched = len(candidate["matched_words"])
+
+    missing = len(candidate["missing_words"])
+
+    if score >= 85:
+
+        summary = f"""
+Candidate has excellent alignment with the Job Description.
+
+✔ Strong Skill Match
+
+✔ High Resume Similarity
+
+✔ Suitable for Technical Interview
+
+✔ Immediate Shortlisting Recommended
+"""
+
+    elif score >= 65:
+
+        summary = f"""
+Candidate satisfies most requirements.
+
+✔ Good Technical Match
+
+✔ Some Skills Missing
+
+✔ Can Proceed to Screening Round
+"""
+
+    else:
+
+        summary = f"""
+Candidate does not satisfy the required profile.
+
+Several required skills are missing.
+
+Recruiter should consider other applicants.
+"""
+
+    with st.expander(f"📄 HR Review - {candidate['filename']}"):
+
+        st.write(summary)
+
+        st.write("Matched Skills :", matched)
+
+        st.write("Missing Skills :", missing)
+
+
+
+
+st.markdown("---")
+
+st.header("📈 Screening Dashboard")
+
+selected = len([c for c in candidates if c["score"] >= 85])
+
+recommended = len([c for c in candidates if 65 <= c["score"] < 85])
+
+rejected = len([c for c in candidates if c["score"] < 65])
+
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    st.metric("Highly Recommended", selected)
+
+with c2:
+    st.metric("Recommended", recommended)
+
+with c3:
+    st.metric("Rejected", rejected)
+
+
+st.markdown("---")
+
+st.markdown(
+"""
+<center>
+
+<h4>
+
+🤖 AI Resume Screening System
+
+</h4>
+
+Powered by
+
+OpenAI • Gemini • Groq • Together AI • OpenRouter
+
+</center>
+
+""",
+unsafe_allow_html=True
+)
