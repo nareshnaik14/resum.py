@@ -93,14 +93,14 @@ border:none;
 
 background: #1d4ed8;
 
-}
+#}
 
-/* TextArea */
+#/* TextArea */
 
-textarea{
+#textarea{
 
-border-radius:10px !important;
-color:block;
+#border-radius:10px !important;
+#color:block;
 
 }
 
