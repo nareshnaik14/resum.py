@@ -100,6 +100,7 @@ background: #1d4ed8;
 textarea{
 
 border-radius:10px !important;
+color:block;
 
 }
 
