@@ -30,7 +30,7 @@ background: linear-gradient(eef5ff,dbeafe,ffffff);
 
 /* Sidebar */
 section[data-testid="stSidebar"]{
-back-ground: 0f172a;
+back-ground: blue;
 color:white;
 }
 
