@@ -25,7 +25,7 @@ st.markdown(
 
 /* Main App */
 .stApp{
-background:linear-gradient(135deg,eef5ff,dbeafe,ffffff);
+background:linear-gradient(eef5ff,dbeafe,ffffff);
 }
 
 /* Sidebar */
