@@ -667,7 +667,7 @@ if "candidate_scores" in st.session_state:
                 disabled=True,
                 key=candidate["filename"],
 
-            )""
+            )
 
 
 
