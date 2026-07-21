@@ -21,7 +21,7 @@ st.set_page_config(
 # Professional CSS
 # --------------------------------------------------------
 
-st.markdown("""
+st.markdown(
 <style>
 
 /* Main App */
@@ -129,7 +129,7 @@ font-weight:bold;
 
 </style>
 
-""", unsafe_allow_html=True)
+, unsafe_allow_html=True)
 
 # --------------------------------------------------------
 # Sidebar
@@ -142,7 +142,7 @@ st.sidebar.markdown("---")
 # API KEY
 
 api_key = st.sidebar.text_input(
-    color=blue;
+
     "🔑 API Key",
     type="password",
     placeholder="Enter API Key"
