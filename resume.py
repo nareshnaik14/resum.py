@@ -6,6 +6,7 @@ import pdfplumber
 import docx
 import textract
 from striprtf.striprtf import rtf_to_text
+
 # --------------------------------------------------------
 # Page Configuration
 # --------------------------------------------------------
@@ -20,17 +21,17 @@ st.set_page_config(
 # Professional CSS
 # --------------------------------------------------------
 
-st.markdown(
+st.markdown("""
 <style>
 
 /* Main App */
 .stApp{
-background: linear-gradient(eef5ff,dbeafe,ffffff);
+background:linear-gradient(135deg,#eef5ff,#dbeafe,#ffffff);
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"]{
-back-ground: blue;
+background:#0f172a;
 color:white;
 }
 
@@ -41,37 +42,38 @@ color:white;
 /* Title */
 
 .main-title{
-#font-size: 10px;
+font-size:40px;
 font-weight:bold;
-#color: 0f172a;
+color:#0f172a;
 text-align:center;
-#padding: 10px;
+padding:10px;
 }
 
 /* Cards */
 
 .card{
 background:white;
-#padding:20px;
-"""border-radius:15px;
-box-shadow:0px 4px 15px rgba(0,0,0,.15);"""
+padding:20px;
+border-radius:15px;
+box-shadow:0px 4px 15px rgba(0,0,0,.15);
+margin-bottom:20px;
 }
 
 /* Upload */
 
 [data-testid="stFileUploader"]{
 background:white;
-#padding:15px;
-#border-radius:12px;
+padding:15px;
+border-radius:12px;
 }
 
 /* Buttons */
 
 .stButton>button{
 
-"""width:100%;
+width:100%;
 
-background:2563eb;
+background:#2563eb;
 
 color:white;
 
@@ -79,7 +81,7 @@ border-radius:10px;
 
 height:50px;
 
-font-size:18px;"""
+font-size:18px;
 
 font-weight:bold;
 
@@ -97,7 +99,7 @@ background:#1d4ed8;
 
 textarea{
 
-#border-radius:10px !important;
+border-radius:10px !important;
 
 }
 
@@ -105,7 +107,7 @@ textarea{
 
 div[data-baseweb="select"]{
 
-#border-radius:10px;
+border-radius:10px;
 
 }
 
@@ -113,11 +115,11 @@ div[data-baseweb="select"]{
 
 .success{
 
-background:dcfce7;
-"""
+background:#dcfce7;
+
 padding:15px;
 
-border-radius:10px;"""
+border-radius:10px;
 
 color:green;
 
@@ -273,7 +275,6 @@ top_k = st.sidebar.slider(
 
 st.sidebar.markdown("---")
 
-
 # --------------------------------------------------------
 # Main Header
 # --------------------------------------------------------
@@ -348,7 +349,7 @@ Education
 
 B.Tech/MCA
 
-
+"""
 
     )
 
@@ -431,4 +432,3 @@ if analyze:
     else:
 
         st.success("✅ Ready for Resume Parsing...")
-
