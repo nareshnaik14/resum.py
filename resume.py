@@ -36,7 +36,7 @@ color:blue;
 }
 
 section[data-testid="stSidebar"] *{
-color:blue;
+color:black;
 }
 
 /* Title */
@@ -52,7 +52,7 @@ padding:10px;
 /* Cards */
 
 .card{
-background: yellow;
+background: whight;
 padding:20px;
 border-radius:15px;
 box-shadow:0px 4px 15px rgba(0,0,0,.15);
