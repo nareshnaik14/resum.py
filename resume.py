@@ -389,23 +389,241 @@ if resumes:
 # --------------------------------------------------------
 # Analyze Button
 # --------------------------------------------------------
-
 analyze = st.button("🚀 Analyze Resumes")
+if analyze:
+    if not api_key:
+        st.error("Please Enter API Key")
+    elif not resumes:
+        st.error("Upload Resumes")
+    elif not (jd_file or job_description):
+        st.error("Upload or Paste Job Description")
+    else:
+        st.success("✅ Ready for Resume Parsing...")
+
+
+# ==========================================================
+# Resume Text Extraction Functions
+# ==========================================================
+
+def extract_pdf(file):
+    text = ""
+    try:
+        with pdfplumber.open(file) as pdf:
+            for page in pdf.pages:
+                page_text = page.extract_text()
+                if page_text:
+                    text += page_text + "\n"
+    except Exception as e:
+        st.error(f"PDF Error: {e}")
+    return text
+
+
+def extract_docx(file):
+    text = ""
+    try:
+        document = docx.Document(file)
+        for para in document.paragraphs:
+            text += para.text + "\n"
+    except Exception as e:
+        st.error(f"DOCX Error: {e}")
+    return text
+
+
+def extract_doc(file):
+    text = ""
+    try:
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".doc") as tmp:
+            tmp.write(file.read())
+            tmp_path = tmp.name
+
+        text = textract.process(tmp_path).decode("utf-8")
+
+        os.remove(tmp_path)
+
+    except Exception as e:
+        st.error(f"DOC Error: {e}")
+
+    return text
+
+
+def extract_txt(file):
+    try:
+        return file.read().decode("utf-8")
+    except:
+        return ""
+
+
+def extract_rtf(file):
+    try:
+        raw = file.read().decode("utf-8")
+        return rtf_to_text(raw)
+    except:
+        return ""
+
+
+def extract_resume(file):
+
+    extension = file.name.split(".")[-1].lower()
+
+    if extension == "pdf":
+        return extract_pdf(file)
+
+    elif extension == "docx":
+        return extract_docx(file)
+
+    elif extension == "doc":
+        return extract_doc(file)
+
+    elif extension == "txt":
+        return extract_txt(file)
+
+    elif extension == "rtf":
+        return extract_rtf(file)
+
+    return ""
+
+
+# ==========================================================
+# Parse Uploaded Resumes
+# ==========================================================
+
+parsed_resumes = []
+
+if resumes:
+
+    st.markdown("---")
+    st.subheader("📑 Resume Preview")
+
+    for file in resumes:
+
+        with st.spinner(f"Reading {file.name}..."):
+
+            resume_text = extract_resume(file)
+
+            resume_data = {
+                "filename": file.name,
+                "text": resume_text,
+                "characters": len(resume_text),
+                "words": len(resume_text.split())
+            }
+
+            parsed_resumes.append(resume_data)
+
+            with st.container():
+
+                st.markdown(
+                    f"""
+                    <div class="card">
+                    <h4>📄 {file.name}</h4>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+                col1, col2 = st.columns(2)
+
+                with col1:
+                    st.metric("Characters", len(resume_text))
+
+                with col2:
+                    st.metric("Words", len(resume_text.split()))
+
+                with st.expander("Preview Resume Text"):
+
+                    if resume_text.strip():
+
+                        st.text_area(
+                            "",
+                            value=resume_text[:3000],
+                            height=250,
+                            disabled=True,
+                            key=file.name
+                        )
+
+                    else:
+
+                        st.warning("No readable text found.")
+
+st.session_state["parsed_resumes"] = parsed_resumes
+
+
+
+
+
+# ==========================================================
+# Simple Resume Ranking
+# ==========================================================
 
 if analyze:
 
-    if not api_key:
+    parsed_resumes = st.session_state.get("parsed_resumes", [])
 
-        st.error("Please Enter API Key")
+    if len(parsed_resumes) == 0:
 
-    elif not resumes:
-
-        st.error("Upload Resumes")
-
-    elif not (jd_file or job_description):
-
-        st.error("Upload or Paste Job Description")
+        st.error("No resumes available.")
 
     else:
 
-        st.success("✅ Ready for Resume Parsing...")
+        # Read Job Description
+
+        if job_description.strip():
+
+            jd_text = job_description.lower()
+
+        else:
+
+            jd_text = ""
+
+        candidate_scores = []
+
+        # ------------------------------------------
+        # Calculate Similarity Score
+        # ------------------------------------------
+
+        for resume in parsed_resumes:
+
+            resume_text = resume["text"].lower()
+
+            jd_words = set(jd_text.split())
+
+            resume_words = set(resume_text.split())
+
+            matched_words = jd_words.intersection(resume_words)
+
+            if len(jd_words) == 0:
+                score = 0
+            else:
+                score = round(
+                    (len(matched_words) / len(jd_words)) * 100,
+                    2
+                )
+
+            candidate_scores.append({
+
+                "filename": resume["filename"],
+
+                "score": score,
+
+                "matched_words": sorted(list(matched_words)),
+
+                "missing_words": sorted(list(jd_words - resume_words)),
+
+                "resume_text": resume["text"]
+
+            })
+
+        # ------------------------------------------
+        # Sort Highest Score First
+        # ------------------------------------------
+
+        candidate_scores = sorted(
+
+            candidate_scores,
+
+            key=lambda x: x["score"],
+
+            reverse=True
+
+        )
+
+        st.session_state["candidate_scores"] = candidate_scores
