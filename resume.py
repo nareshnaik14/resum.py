@@ -20,7 +20,7 @@ st.set_page_config(
 # Professional CSS
 # --------------------------------------------------------
 
-st.markdown("""
+st.markdown(
 <style>
 
 /* Main App */
