@@ -702,7 +702,7 @@ if "candidate_scores" in st.session_state:
 ###
 
 ##
-st.header("📋 Candidate Details")
+"""st.header("📋 Candidate Details")
 
 if "candidate_scores" in st.session_state:
 
@@ -741,11 +741,12 @@ if "candidate_scores" in st.session_state:
 
 st.markdown("## 📊 Candidate Ranking")
 rank = 1
-   for candidate in candidates:                                 #for candidate in candidates:
+  # for candidate in candidates:                                 #for candidate in candidates:
 
-  st.markdown(
+""" 
+"""st.markdown(
          f"""
-          <div style="background:white;
+         """ <div style="background:white;
                 padding:15px;
                 margin-bottom:10px;
                 border-radius:12px;">
@@ -758,7 +759,7 @@ rank = 1
 
     </div>
     """,
-    unsafe_allow_html=True
+  """  unsafe_allow_html=True
     )
 
 rank += 1
@@ -815,7 +816,7 @@ st.markdown("## 👤 Candidate Details")
 ###
 
 ##
-"""st.header("📋 Candidate Details")
+st.header("📋 Candidate Details")
 
 if "candidate_scores" in st.session_state:
 
