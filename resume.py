@@ -679,12 +679,12 @@ if "candidate_scores" in st.session_state:
 
         st.markdown(
         f"""
-      #  <div style="background:#dcfce7;
+  """    #  <div style="background:#dcfce7;
                #     padding:25px;
             #        border-radius:15px;
              #       border-left:8px solid green;">
 
-        <h2>🏆 Best Candidate</h2>
+   #     <h2>🏆 Best Candidate</h2>
 
      #   <h3>{best['filename']}</h3>
 
@@ -694,7 +694,7 @@ if "candidate_scores" in st.session_state:
 
         </div>
         """,
-        unsafe_allow_html=True
+        unsafe_allow_html=True"""
         )
 
 
