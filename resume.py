@@ -665,7 +665,7 @@ if "candidate_scores" in st.session_state:
                 candidate["resume_text"][:2500],
                 height=250,
                 disabled=True,
-                key=candidate["filename"]
+                key=candidate["filename"],
 ""
             )
 
