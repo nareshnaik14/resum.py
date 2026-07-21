@@ -97,7 +97,7 @@ background:#1d4ed8;
 
 textarea{
 
-border-radius:10px !important;
+#border-radius:10px !important;
 
 }
 
@@ -105,7 +105,7 @@ border-radius:10px !important;
 
 div[data-baseweb="select"]{
 
-border-radius:10px;
+#border-radius:10px;
 
 }
 
