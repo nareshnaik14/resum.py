@@ -25,12 +25,12 @@ st.markdown(
 
 /* Main App */
 .stApp{
-background:linear-gradient(135deg,#eef5ff,#dbeafe,#ffffff);
+background:linear-gradient(135deg,eef5ff,dbeafe,ffffff);
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"]{
-background:#0f172a;
+background:0f172a;
 color:white;
 }
 
@@ -43,7 +43,7 @@ color:white;
 .main-title{
 font-size:40px;
 font-weight:bold;
-color:#0f172a;
+color:0f172a;
 text-align:center;
 padding:10px;
 }
@@ -72,7 +72,7 @@ border-radius:12px;
 
 width:100%;
 
-background:#2563eb;
+background:2563eb;
 
 color:white;
 
@@ -114,7 +114,7 @@ border-radius:10px;
 
 .success{
 
-background:#dcfce7;
+background:dcfce7;
 
 padding:15px;
 
