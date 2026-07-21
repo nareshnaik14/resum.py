@@ -815,7 +815,7 @@ st.markdown("## 👤 Candidate Details")
 ###
 
 ##
-st.header("📋 Candidate Details")
+"""st.header("📋 Candidate Details")
 
 if "candidate_scores" in st.session_state:
 
@@ -850,6 +850,6 @@ if "candidate_scores" in st.session_state:
                 key=candidate["filename"]
 
 
-            )
+            )"""
 
 
