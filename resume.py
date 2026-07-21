@@ -41,11 +41,11 @@ color:white;
 /* Title */
 
 .main-title{
-font-size:40px;
+font-size: 10px;
 font-weight:bold;
 color: 0f172a;
 text-align:center;
-padding:10px;
+padding: 10px;
 }
 
 /* Cards */
