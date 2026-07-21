@@ -36,7 +36,7 @@ color:blue;
 }
 
 section[data-testid="stSidebar"] *{
-color:white;
+color:blue;
 }
 
 /* Title */
@@ -52,7 +52,7 @@ padding:10px;
 /* Cards */
 
 .card{
-background: white;
+background: yellow;
 padding:20px;
 border-radius:15px;
 box-shadow:0px 4px 15px rgba(0,0,0,.15);
@@ -62,7 +62,7 @@ margin-bottom:20px;
 /* Upload */
 
 [data-testid="stFileUploader"]{
-background:white;
+background:;
 padding:15px;
 border-radius:12px;
 }
