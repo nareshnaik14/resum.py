@@ -142,6 +142,7 @@ st.sidebar.markdown("---")
 # API KEY
 
 api_key = st.sidebar.text_input(
+    color=blue;
     "🔑 API Key",
     type="password",
     placeholder="Enter API Key"
