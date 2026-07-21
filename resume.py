@@ -25,12 +25,12 @@ st.markdown(
 
 /* Main App */
 .stApp{
-background:linear-gradient(eef5ff,dbeafe,ffffff);
+background: linear-gradient(eef5ff,dbeafe,ffffff);
 }
 
 /* Sidebar */
 section[data-testid="stSidebar"]{
-background:0f172a;
+back-ground: 0f172a;
 color:white;
 }
 
@@ -43,7 +43,7 @@ color:white;
 .main-title{
 font-size:40px;
 font-weight:bold;
-color:0f172a;
+color: 0f172a;
 text-align:center;
 padding:10px;
 }
