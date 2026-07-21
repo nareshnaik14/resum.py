@@ -348,7 +348,7 @@ Education
 
 B.Tech/MCA
 
-"""
+
 
     )
 
