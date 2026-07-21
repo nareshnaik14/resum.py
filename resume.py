@@ -547,7 +547,7 @@ if resumes:
                 st.markdown(
                     f"""
                     <div class="card">
-                    <h4>📄 {file.name}</h4>
+                   # <h4>📄 {file.name}</h4>
                     </div>
                     """,
                     unsafe_allow_html=True,
