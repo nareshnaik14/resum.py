@@ -21,7 +21,7 @@ st.set_page_config(
 # Professional CSS
 # --------------------------------------------------------
 
-st.markdown(
+st.markdown("""
 <style>
 
 /* Main App */
@@ -32,7 +32,7 @@ background:linear-gradient(135deg,#eef5ff,#dbeafe,#ffffff);
 /* Sidebar */
 section[data-testid="stSidebar"]{
 background:#0f172a;
-color:white;
+color:blue;
 }
 
 section[data-testid="stSidebar"] *{
@@ -52,7 +52,7 @@ padding:10px;
 /* Cards */
 
 .card{
-background:white;
+background: white;
 padding:20px;
 border-radius:15px;
 box-shadow:0px 4px 15px rgba(0,0,0,.15);
@@ -73,7 +73,7 @@ border-radius:12px;
 
 width:100%;
 
-background:#2563eb;
+background: #2563eb;
 
 color:black;
 
@@ -91,7 +91,7 @@ border:none;
 
 .stButton>button:hover{
 
-background:#1d4ed8;
+background: #1d4ed8;
 
 }
 
@@ -115,7 +115,7 @@ border-radius:10px;
 
 .success{
 
-background:#dcfce7;
+background: #dcfce7;
 
 padding:15px;
 
@@ -127,7 +127,7 @@ font-weight:bold;
 
 }
 
-</style>
+</style>"""
 
 , unsafe_allow_html=True)
 
