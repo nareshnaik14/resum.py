@@ -75,7 +75,7 @@ width:100%;
 
 background:#2563eb;
 
-color:white;
+color:black;
 
 border-radius:10px;
 
@@ -249,31 +249,6 @@ else:
 
     )
 
-temperature = st.sidebar.slider(
-
-"Temperature",
-
-0.0,
-
-1.0,
-
-0.3
-
-)
-
-top_k = st.sidebar.slider(
-
-"Top Candidates",
-
-1,
-
-20,
-
-5
-
-)
-
-st.sidebar.markdown("---")
 
 # --------------------------------------------------------
 # Main Header
