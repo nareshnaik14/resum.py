@@ -41,36 +41,35 @@ color:white;
 /* Title */
 
 .main-title{
-font-size: 10px;
+#font-size: 10px;
 font-weight:bold;
-color: 0f172a;
+#color: 0f172a;
 text-align:center;
-padding: 10px;
+#padding: 10px;
 }
 
 /* Cards */
 
 .card{
 background:white;
-padding:20px;
-border-radius:15px;
-box-shadow:0px 4px 15px rgba(0,0,0,.15);
-margin-bottom:20px;
+#padding:20px;
+"""border-radius:15px;
+box-shadow:0px 4px 15px rgba(0,0,0,.15);"""
 }
 
 /* Upload */
 
 [data-testid="stFileUploader"]{
 background:white;
-padding:15px;
-border-radius:12px;
+#padding:15px;
+#border-radius:12px;
 }
 
 /* Buttons */
 
 .stButton>button{
 
-width:100%;
+"""width:100%;
 
 background:2563eb;
 
@@ -80,7 +79,7 @@ border-radius:10px;
 
 height:50px;
 
-font-size:18px;
+font-size:18px;"""
 
 font-weight:bold;
 
@@ -115,10 +114,10 @@ border-radius:10px;
 .success{
 
 background:dcfce7;
-
+"""
 padding:15px;
 
-border-radius:10px;
+border-radius:10px;"""
 
 color:green;
 
